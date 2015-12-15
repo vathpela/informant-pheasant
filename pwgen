@@ -272,11 +272,13 @@ def usage(errcode):
         fd = sys.stderr.fileno()
     else:
         fd = sys.stdout.fileno()
-    os.write(fd, "usage: pwgen [--nopunc|--punchars=<chars>]\n".encode('utf8'))
+    msg = "usage: pwgen [--nopunc|--punchars=<chars>] [--nospaces]\n"
+    os.write(fd, msg.encode('utf8'))
     sys.exit(errcode)
 
 if __name__ == '__main__':
     punc = True
+    spaces = True
     skiplist=[]
 
     for x in range(1,len(sys.argv)):
@@ -302,6 +304,8 @@ if __name__ == '__main__':
                     usage(1)
             except IndexError:
                     usage(1)
+        elif arg == '--nospaces':
+            spaces = False
         else:
             msg = "Unknown argument '%s'\n" % (arg,)
             os.write(sys.stderr.fileno(), msg.encode('utf8'))
@@ -354,7 +358,7 @@ if __name__ == '__main__':
     # be sure and tell the user what we got.
     stdout = sys.stdout.fileno()
     for x in range(0, 8):
-        if x != 0:
+        if x != 0 and spaces:
             os.write(stdout, ' '.encode('utf8'))
         if punc:
             if poundoffset == x:
